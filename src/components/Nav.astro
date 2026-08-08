@@ -1,0 +1,68 @@
+---
+import { EMPRESA } from '@/data/sitio';
+
+const ENLACES = [
+  ['#servicios', 'Servicios'],
+  ['#nosotros', 'Nosotros'],
+  ['#proyectos', 'Proyectos'],
+  ['#contacto', 'Contacto'],
+];
+---
+
+<header id="nav">
+  <div class="wrap">
+    <a class="logo" href="#inicio">
+      <span class="mark" aria-hidden="true">F</span>
+      <b>{EMPRESA.nombre}<span>SRL · desde {EMPRESA.desde}</span></b>
+    </a>
+
+    <button id="burger" type="button" aria-expanded="false" aria-controls="menu">Menú</button>
+
+    <nav id="menu" aria-label="Navegación principal">
+      {ENLACES.map(([href, texto]) => <a href={href}>{texto}</a>)}
+    </nav>
+
+    <a class="wa" href={EMPRESA.whatsapp} target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+</header>
+
+<script>
+  const nav = document.getElementById('nav')!;
+  const menu = document.getElementById('menu')!;
+  const burger = document.getElementById('burger')!;
+
+  burger.addEventListener('click', () => {
+    const abierto = menu.classList.toggle('open');
+    burger.setAttribute('aria-expanded', String(abierto));
+  });
+
+  // Al elegir una sección en móvil, el menú se cierra solo.
+  menu.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).tagName === 'A') {
+      menu.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  const alDesplazar = () => nav.classList.toggle('solid', window.scrollY > 40);
+  document.addEventListener('scroll', alDesplazar, { passive: true });
+  alDesplazar();
+
+  // Marca en el menú la sección que ocupa el centro de la pantalla.
+  const enlaces = [...menu.querySelectorAll('a')];
+  const observador = new IntersectionObserver(
+    (entradas) => {
+      for (const entrada of entradas) {
+        if (!entrada.isIntersecting) continue;
+        const destino = `#${entrada.target.id}`;
+        enlaces.forEach((a) => a.classList.toggle('on', a.getAttribute('href') === destino));
+      }
+    },
+    { rootMargin: '-45% 0px -50% 0px' },
+  );
+
+  for (const id of ['servicios', 'nosotros', 'proyectos', 'contacto']) {
+    const seccion = document.getElementById(id);
+    if (seccion) observador.observe(seccion);
+  }
+</script>

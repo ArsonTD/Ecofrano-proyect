@@ -1,0 +1,106 @@
+---
+import { Image } from 'astro:assets';
+import ModalProyecto from '@/components/ModalProyecto.astro';
+import { TIPOS, publicados } from '@/data/proyectos';
+
+const obras = publicados();
+const cuenta = (tipo: string) => obras.filter((p) => p.tipo === tipo).length;
+---
+
+<section class="sec" id="proyectos">
+  <div class="wrap">
+    <div class="proj-head">
+      <div>
+        <p class="eyebrow">Proyectos</p>
+        <h2 class="big" style="margin-bottom:0">
+          Experiencia en desarrollos turísticos, residenciales y comerciales
+        </h2>
+      </div>
+      <button class="btn dark" type="button" id="addBtn">+ Agregar proyecto</button>
+    </div>
+
+    <p class="lede" style="margin-bottom:26px">
+      Obras hoteleras, torres, residenciales y obra civil donde aportamos personal,
+      encofrado, andamios, terminación y acarreo.
+    </p>
+
+    <div class="toolbar">
+      <div class="chips" id="chips" role="group" aria-label="Filtrar por tipo de obra">
+        <button type="button" class="chip on" data-tipo="Todas" aria-pressed="true">
+          Todas · <span class="n">{obras.length}</span>
+        </button>
+        {
+          TIPOS.map((tipo) => (
+            <button type="button" class="chip" data-tipo={tipo} aria-pressed="false">
+              {tipo} · <span class="n">{cuenta(tipo)}</span>
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="admin-toggle" id="adminToggle" role="switch" aria-checked="false" tabindex="0">
+        <span class="switch" aria-hidden="true"></span>
+        <span>Modo administrador</span>
+      </div>
+    </div>
+
+    <div class="cards" id="cards">
+      {
+        obras.map((p) => (
+          <article
+            class="card"
+            data-id={p.id}
+            data-tipo={p.tipo}
+            data-ubicacion={p.ubicacion}
+            data-anio={p.anio}
+            data-destacado={p.destacado ? 'si' : ''}
+          >
+            <div class="ph">
+              <Image
+                src={p.imagen}
+                alt={`${p.nombre} — obra con participación de Encofrado Flernil`}
+                widths={[400, 800]}
+                sizes="(max-width: 720px) 100vw, (max-width: 1000px) 50vw, 380px"
+                loading="lazy"
+              />
+              <span class="star" hidden={!p.destacado}>Destacado</span>
+              <span class="yr">{p.anio}</span>
+            </div>
+            <div class="bd">
+              <h3>{p.nombre}</h3>
+              <div class="meta">{p.tipo} · {p.ubicacion}</div>
+              <p class="desc" hidden={!p.descripcion}>{p.descripcion}</p>
+              <div class="tags">
+                {p.aportes.map((a) => (
+                  <span>{a}</span>
+                ))}
+              </div>
+            </div>
+            <div class="acts">
+              <button type="button" data-accion="editar">Editar</button>
+              <button type="button" data-accion="visibilidad">Ocultar</button>
+              <button type="button" data-accion="eliminar">Eliminar</button>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="empty" id="empty" hidden>
+      No hay obras publicadas en este tipo todavía. Cambia el filtro o agrega un
+      proyecto desde el panel.
+    </p>
+
+    <div class="more" id="moreWrap" hidden>
+      <button class="btn ghost claro" type="button" id="moreBtn">Ver más obras</button>
+    </div>
+  </div>
+</section>
+
+<ModalProyecto />
+
+<script>
+  import { iniciarProyectos } from '@/scripts/proyectos';
+
+  iniciarProyectos();
+</script>

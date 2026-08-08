@@ -1,0 +1,59 @@
+---
+import { Image } from 'astro:assets';
+import { ANIOS, EQUIPO, PILARES, VALORES } from '@/data/sitio';
+---
+
+<section class="sec alt" id="nosotros">
+  <div class="wrap">
+    <p class="eyebrow">Quiénes somos</p>
+
+    <div class="about">
+      <div>
+        <h2 class="big">Una empresa construida sobre calidad, eficiencia y compromiso</h2>
+        <p class="lede">
+          Encofrado Flernil SRL es una empresa dominicana dedicada al mercado de la
+          construcción. Con más de {ANIOS} años de experiencia técnica acumulada y un
+          equipo propio de colaboradores, trabajamos para ofrecer soluciones que
+          cumplan con los estándares de calidad que exige cada obra.
+        </p>
+        <p class="lede">
+          A lo largo de nuestra trayectoria hemos participado en proyectos como el
+          Hotel Infiniti Punta Cana, el Hotel Fishing Lodge Cap Cana y la ampliación
+          de la Funeraria Blandino en Santo Domingo, consolidándonos como una empresa
+          capaz de responder en desarrollos turísticos, residenciales y comerciales.
+        </p>
+
+        <ul class="values">
+          {VALORES.map((valor) => <li>{valor}</li>)}
+        </ul>
+      </div>
+
+      <dl class="mvv">
+        {
+          PILARES.map((pilar) => (
+            <div>
+              <dt>{pilar.titulo}</dt>
+              <dd>{pilar.texto}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+
+    <div class="team">
+      {
+        EQUIPO.map((miembro) => (
+          <article>
+            <div class="ph">
+              <Image src={miembro.foto} alt={miembro.nombre} widths={[220, 440]} sizes="(max-width: 720px) 50vw, 20vw" loading="lazy" />
+            </div>
+            <div class="nm">
+              <b>{miembro.nombre}</b>
+              <i>{miembro.cargo}</i>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

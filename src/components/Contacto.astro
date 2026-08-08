@@ -1,0 +1,149 @@
+---
+import { CONTACTO, EMPRESA } from '@/data/sitio';
+import { SERVICIOS } from '@/data/servicios';
+---
+
+<section class="sec" id="contacto">
+  <div class="wrap">
+    <p class="eyebrow">Contacto</p>
+
+    <div class="contact">
+      <div>
+        <h2 class="big">Cuéntanos de la obra y te cotizamos</h2>
+        <p class="lede" style="margin-bottom:28px">
+          Respondemos en {EMPRESA.plazo}. Mientras más datos nos des, más precisa
+          sale la cotización.
+        </p>
+
+        <form id="cot" novalidate>
+          <div class="row2">
+            <div class="f" id="c-f-nombre">
+              <label for="c-nombre">Nombre y empresa <span class="req">*</span></label>
+              <input id="c-nombre" type="text" autocomplete="name" placeholder="Ej.: Ana Reyes · Constructora RD" />
+              <div class="err">Necesitamos tu nombre para saber a quién responder.</div>
+            </div>
+
+            <div class="f" id="c-f-tel">
+              <label for="c-tel">Teléfono <span class="req">*</span></label>
+              <input id="c-tel" type="tel" inputmode="tel" autocomplete="tel" placeholder="(809) 000-0000" />
+              <div class="err">Falta el teléfono para poder cotizar. Formato: (809) 000-0000.</div>
+            </div>
+          </div>
+
+          <div class="row2">
+            <div class="f" id="c-f-serv">
+              <label for="c-serv">Servicio que necesitas <span class="req">*</span></label>
+              <select id="c-serv">
+                <option value="">Selecciona un servicio</option>
+                {SERVICIOS.map((s) => <option value={s.nombre}>{s.nombre}</option>)}
+              </select>
+              <div class="err">Elige el servicio para pasar tu solicitud al área correcta.</div>
+            </div>
+
+            <div class="f" id="c-f-ubi">
+              <label for="c-ubi">Ubicación de la obra <span class="req">*</span></label>
+              <input id="c-ubi" type="text" placeholder="Ej.: Bávaro, La Altagracia" />
+              <div class="err">Indica la zona: de eso depende el acarreo y el plazo.</div>
+            </div>
+          </div>
+
+          <div class="f">
+            <label for="c-msg">Detalles de la obra</label>
+            <textarea id="c-msg" placeholder="Metros de encofrado, altura, fecha de inicio, cantidad de andamios…"></textarea>
+            <div class="hint">Opcional, pero acelera la respuesta.</div>
+          </div>
+
+          <button class="btn primary" type="submit">Enviar solicitud</button>
+        </form>
+
+        <div class="sent" id="sent" role="status" aria-live="polite" tabindex="-1" hidden>
+          <b>Solicitud enviada</b>
+          <p id="sentTxt"></p>
+          <p style="margin-top:12px">
+            <button class="btn ghost" type="button" id="againBtn" style="padding:10px 14px">
+              Enviar otra
+            </button>
+          </p>
+        </div>
+      </div>
+
+      <dl class="ch">
+        {
+          CONTACTO.map((c) =>
+            c.href ? (
+              <a href={c.href} target={c.externo ? '_blank' : undefined} rel={c.externo ? 'noopener' : undefined}>
+                <dt>{c.titulo}</dt>
+                <dd>{c.valor}</dd>
+              </a>
+            ) : (
+              <div>
+                <dt>{c.titulo}</dt>
+                <dd set:html={c.valor} />
+              </div>
+            ),
+          )
+        }
+      </dl>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('cot') as HTMLFormElement;
+  const sent = document.getElementById('sent')!;
+  const tel = document.getElementById('c-tel') as HTMLInputElement;
+  const val = (id: string) => (document.getElementById(id) as HTMLInputElement).value;
+
+  // Máscara: 8099956312 -> (809) 995-6312
+  tel.addEventListener('input', () => {
+    const d = tel.value.replace(/\D/g, '').slice(0, 10);
+    let salida = d ? `(${d.slice(0, 3)}` : '';
+    if (d.length >= 4) salida += `) ${d.slice(3, 6)}`;
+    if (d.length >= 7) salida += `-${d.slice(6, 10)}`;
+    tel.value = salida;
+  });
+
+  const limpiar = () => form.querySelectorAll('.f').forEach((f) => f.classList.remove('bad'));
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    limpiar();
+
+    const reglas: [string, boolean][] = [
+      ['c-f-nombre', val('c-nombre').trim().length > 2],
+      ['c-f-tel', val('c-tel').replace(/\D/g, '').length === 10],
+      ['c-f-serv', !!val('c-serv')],
+      ['c-f-ubi', val('c-ubi').trim().length > 2],
+    ];
+
+    let ok = true;
+    for (const [id, valido] of reglas) {
+      if (!valido) {
+        document.getElementById(id)!.classList.add('bad');
+        ok = false;
+      }
+    }
+    if (!ok) {
+      form.querySelector<HTMLElement>('.bad input, .bad select')?.focus();
+      return;
+    }
+
+    // TODO: al publicar, enviar esto al correo de la empresa en vez de solo confirmarlo.
+    const nombre = val('c-nombre').trim().split(/\s+/)[0];
+    document.getElementById('sentTxt')!.textContent =
+      `${nombre}, recibimos tu solicitud de ${val('c-serv').toLowerCase()} en ${val('c-ubi').trim()}. ` +
+      `Te respondemos al ${val('c-tel')} en menos de 24 horas laborables.`;
+
+    form.hidden = true;
+    sent.hidden = false;
+    sent.focus();
+  });
+
+  document.getElementById('againBtn')!.addEventListener('click', () => {
+    form.reset();
+    form.hidden = false;
+    sent.hidden = true;
+    limpiar();
+    document.getElementById('c-nombre')!.focus();
+  });
+</script>

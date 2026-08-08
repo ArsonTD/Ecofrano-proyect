@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import hero from '@/assets/hero.webp';
+import { ANIOS, EMPRESA } from '@/data/sitio';
+import { SERVICIOS } from '@/data/servicios';
+import { publicados } from '@/data/proyectos';
+
+const DATOS = [
+  [`+${ANIOS}`, 'Años en obra'],
+  [String(publicados().length), 'Obras entregadas'],
+  [String(SERVICIOS.length), 'Servicios'],
+  ['360°', 'Encofrado y logística'],
+];
+---
+
+<section class="hero" id="inicio">
+  <div class="hero-img">
+    <Image
+      src={hero}
+      alt="Personal de Encofrado Flernil en obra"
+      widths={[720, 1200, 1600]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </div>
+
+  <div class="wrap hero-in">
+    <p class="eyebrow claro">+{ANIOS} años · República Dominicana</p>
+    <h1>Encofrado, andamios y terminación <em>para obras que no pueden parar</em></h1>
+    <p>
+      Montamos el encofrado, ponemos el andamio, movemos el material y entregamos
+      la terminación. Personal propio, equipo disponible y respuesta en {EMPRESA.plazo}.
+    </p>
+
+    <div class="hero-cta">
+      <a class="btn primary" href="#contacto">Solicitar cotización</a>
+      <a class="btn ghost" href={EMPRESA.telefonoHref}>Llamar {EMPRESA.telefono}</a>
+    </div>
+
+    <div class="facts">
+      {
+        DATOS.map(([valor, etiqueta]) => (
+          <div>
+            <div class="n" data-dato={etiqueta}>{valor}</div>
+            <div class="l">{etiqueta}</div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

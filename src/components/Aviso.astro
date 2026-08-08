@@ -1,0 +1,19 @@
+---
+/** Franja de aviso del prototipo. Al publicar, se borra de index.astro. */
+---
+
+<div id="demo">
+  <div class="wrap">
+    <span>
+      <b>Prototipo</b> — Breeze × Aroly para Encofrado Flernil. Fotos y textos
+      tomados del dossier; años, tipos y ubicaciones por confirmar.
+    </span>
+    <button type="button" id="ocultarAviso">Ocultar</button>
+  </div>
+</div>
+
+<script>
+  document
+    .getElementById('ocultarAviso')
+    ?.addEventListener('click', () => document.getElementById('demo')?.remove());
+</script>

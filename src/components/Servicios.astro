@@ -1,0 +1,65 @@
+---
+import { Image } from 'astro:assets';
+import encofrado from '@/assets/servicios/encofrado.webp';
+import madera from '@/assets/servicios/madera.webp';
+import terminacion from '@/assets/servicios/terminacion.webp';
+import { SERVICIOS } from '@/data/servicios';
+
+const TRIPTICO = [
+  [encofrado, 'Encofrado de estructuras de hormigón', 'Encofrado'],
+  [madera, 'Madera para encofrado en almacén', 'Alquiler de madera'],
+  [terminacion, 'Terminación de obra y piscina', 'Terminación y piscinas'],
+] as const;
+---
+
+<section class="sec" id="servicios">
+  <div class="wrap">
+    <p class="eyebrow">Servicios</p>
+    <h2 class="big">Soluciones para construir, sostener, movilizar y terminar</h2>
+    <p class="lede" style="margin-bottom:40px">
+      Todo se cotiza según obra: metros, plazo y ubicación. Escoge el servicio y
+      te respondemos con precio y disponibilidad de equipo.
+    </p>
+
+    <div class="triptych">
+      {
+        TRIPTICO.map(([imagen, alt, pie]) => (
+          <figure>
+            <Image src={imagen} alt={alt} widths={[400, 800]} sizes="(max-width: 720px) 100vw, 33vw" loading="lazy" />
+            <figcaption>{pie}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+
+    <div class="svc-grid">
+      {
+        SERVICIOS.map((s, i) => (
+          <article class="svc">
+            <div class="ix">{String(i + 1).padStart(2, '0')}</div>
+            <svg viewBox="0 0 24 24" aria-hidden="true" stroke-linecap="square" set:html={s.icono} />
+            <h3>{s.nombre}</h3>
+            <p>{s.descripcion}</p>
+            <button class="ask" type="button" data-servicio={s.nombre}>Cotizar este servicio →</button>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  // El servicio que la persona estaba leyendo viaja con ella hasta el formulario.
+  document.querySelector('.svc-grid')?.addEventListener('click', (e) => {
+    const boton = (e.target as HTMLElement).closest<HTMLButtonElement>('.ask');
+    const servicio = boton?.dataset.servicio;
+    if (!servicio) return;
+
+    const select = document.querySelector<HTMLSelectElement>('#c-serv');
+    if (select) select.value = servicio;
+
+    document.getElementById('contacto')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // El foco espera a que termine el desplazamiento suave.
+    setTimeout(() => document.querySelector<HTMLInputElement>('#c-nombre')?.focus(), 500);
+  });
+</script>
