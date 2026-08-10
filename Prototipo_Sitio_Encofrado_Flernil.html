@@ -75,7 +75,21 @@ h2.big{font-size:clamp(26px,4.4vw,44px);max-width:20ch;margin-bottom:18px}
 .facts{position:relative;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid rgba(255,255,255,.16);margin-top:84px}
 .facts div{padding:20px 18px 22px;border-right:1px solid rgba(255,255,255,.12)}
 .facts div:last-child{border-right:0}
-.facts .n{font-family:var(--mono);font-size:24px;line-height:1;letter-spacing:-0.03em}
+.facts .n{
+  font-family:var(--mono);
+  font-size:24px;
+  line-height:1;
+  letter-spacing:-0.03em;
+  display:inline-block;
+  min-width:2ch;
+  opacity:.35;
+  transform:translate3d(0,8px,0);
+  transition:opacity .55s ease,transform .55s cubic-bezier(.22,1,.36,1);
+  font-variant-numeric:tabular-nums;
+  will-change:transform,opacity;
+}
+.facts.counted .n{opacity:1;transform:translate3d(0,0,0)}
+.facts .n.is-counting{text-shadow:0 0 18px rgba(255,255,255,.08)}
 .facts .l{font-size:11px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#9AA0A6;margin-top:8px}
 
 /* ---------- servicios ---------- */
@@ -261,11 +275,23 @@ footer.site a:hover{color:#fff}
       <a class="btn primary" href="#contacto">Solicitar cotización</a>
       <a class="btn ghost" href="tel:+18099956312">Llamar (809) 995-6312</a>
     </div>
-    <div class="facts">
-      <div><div class="n">+19</div><div class="l">Años en obra</div></div>
-      <div><div class="n" id="factObras">14</div><div class="l">Obras entregadas</div></div>
-      <div><div class="n">8</div><div class="l">Servicios</div></div>
-      <div><div class="n">360°</div><div class="l">Encofrado y logística</div></div>
+    <div class="facts" id="facts">
+      <div>
+        <div class="n counter" data-target="19" data-prefix="+">0</div>
+        <div class="l">Años en obra</div>
+      </div>
+      <div>
+        <div class="n counter" id="factObras" data-target="14">0</div>
+        <div class="l">Obras entregadas</div>
+      </div>
+      <div>
+        <div class="n counter" data-target="8">0</div>
+        <div class="l">Servicios</div>
+      </div>
+      <div>
+        <div class="n counter" data-target="360" data-suffix="°">0°</div>
+        <div class="l">Encofrado y logística</div>
+      </div>
     </div>
   </div>
 </section>
@@ -499,7 +525,17 @@ function renderChips(){
     html += '<button class="chip' + (filtro === t ? ' on' : '') + '" data-t="' + esc(t) + '">' + esc(t) + ' · ' + counts[t] + '</button>';
   });
   document.getElementById('chips').innerHTML = html;
-  document.getElementById('factObras').textContent = base.length;
+
+  /* El contador de obras usa el valor real de proyectos visibles.
+     Si la animación ya terminó, actualizamos el valor sin reiniciar todo el bloque. */
+  var factObras = document.getElementById('factObras');
+  if(factObras){
+    factObras.dataset.target = String(base.length);
+
+    if(document.getElementById('facts').dataset.counted === 'true'){
+      animateCounter(factObras, base.length, 700);
+    }
+  }
 }
 
 function renderCards(){
@@ -705,6 +741,99 @@ document.getElementById('againBtn').addEventListener('click', function(e){
   document.getElementById('sent').classList.remove('on');
   document.getElementById('c-nombre').focus();
 });
+
+/* ============================================================
+   Contadores animados del hero
+   ============================================================ */
+var facts = document.getElementById('facts');
+var factsStarted = false;
+
+function formatCounterValue(el, value){
+  var prefix = el.dataset.prefix || '';
+  var suffix = el.dataset.suffix || '';
+  return prefix + Math.round(value).toLocaleString('es-DO') + suffix;
+}
+
+function animateCounter(el, target, duration){
+  if(!el) return;
+
+  target = Number(target);
+  if(!Number.isFinite(target)) return;
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var current = Number(el.dataset.current || 0);
+
+  if(!Number.isFinite(current)) current = 0;
+
+  if(reduceMotion){
+    el.dataset.current = String(target);
+    el.textContent = formatCounterValue(el, target);
+    return;
+  }
+
+  var startValue = current;
+  var change = target - startValue;
+  var startTime = performance.now();
+  var totalTime = duration || 1800;
+
+  cancelAnimationFrame(el._counterFrame || 0);
+  el.classList.add('is-counting');
+
+  function tick(now){
+    var progress = Math.min((now - startTime) / totalTime, 1);
+
+    /* Ease-out cubic: rápido al principio y suave al llegar al objetivo. */
+    var eased = 1 - Math.pow(1 - progress, 3);
+    var value = startValue + change * eased;
+
+    el.dataset.current = String(value);
+    el.textContent = formatCounterValue(el, value);
+
+    if(progress < 1){
+      el._counterFrame = requestAnimationFrame(tick);
+    }else{
+      el.dataset.current = String(target);
+      el.textContent = formatCounterValue(el, target);
+      el.classList.remove('is-counting');
+    }
+  }
+
+  el._counterFrame = requestAnimationFrame(tick);
+}
+
+function startFactsCounters(){
+  if(factsStarted || !facts) return;
+  factsStarted = true;
+  facts.dataset.counted = 'true';
+  facts.classList.add('counted');
+
+  document.querySelectorAll('#facts .counter').forEach(function(counter, index){
+    var target = Number(counter.dataset.target || 0);
+    counter.dataset.current = '0';
+
+    /* Pequeño desfase entre indicadores para que la entrada se sienta más dinámica. */
+    setTimeout(function(){
+      animateCounter(counter, target, 1600);
+    }, index * 110);
+  });
+}
+
+if(facts){
+  if('IntersectionObserver' in window){
+    var factsObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          startFactsCounters();
+          factsObserver.disconnect();
+        }
+      });
+    }, {threshold:0.35});
+
+    factsObserver.observe(facts);
+  }else{
+    startFactsCounters();
+  }
+}
 
 /* ============================================================
    Navegación
