@@ -2,5 +2,6 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://encofradoflernil.com',
+  site: 'https://arsontd.github.io',
+  base: '/Ecofrano-proyect',
 });

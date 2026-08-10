@@ -94,3 +94,32 @@ publicar de verdad. Las obras que van al sitio se agregan en
    publicar el aviso de privacidad que enlaza el pie.
 4. **Confirmar con el cliente** los años, tipos y ubicaciones de las obras: en el
    dossier venían incompletos.
+
+---
+
+## Despliegue
+
+El sitio se publica solo en GitHub Pages con cada `push` a `main`, vía
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
+
+**URL:** https://arsontd.github.io/Ecofrano-proyect/
+
+**Habilitar una sola vez** (si el primer despliegue falla, es esto):
+en el repo → *Settings* → *Pages* → *Build and deployment* → *Source*:
+elegir **GitHub Actions**.
+
+Después, cada despliegue se ve en la pestaña *Actions*. También se puede lanzar
+a mano desde ahí con *Run workflow*.
+
+### Cambiar al dominio propio
+
+Cuando `encofradoflernil.com` tenga el DNS apuntando a GitHub:
+
+1. En [`astro.config.mjs`](astro.config.mjs): poner
+   `site: 'https://encofradoflernil.com'` y **borrar la línea `base`**.
+2. Crear `public/CNAME` con una sola línea: `encofradoflernil.com`
+3. En *Settings* → *Pages* → *Custom domain*: escribir el dominio.
+
+El `base` es obligatorio mientras el sitio viva en un subdirectorio
+(`/Ecofrano-proyect`) y estorba en un dominio propio, así que los dos cambios
+van juntos.
