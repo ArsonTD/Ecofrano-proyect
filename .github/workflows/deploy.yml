@@ -34,11 +34,11 @@ jobs:
       - name: Construir sitio
         run: npm run build
 
+      # Requiere que Pages ya esté habilitado con Source: GitHub Actions.
+      # No usar `enablement: true`: crear el sitio por API pide permisos de
+      # admin que el GITHUB_TOKEN no tiene, y el paso falla con 403.
       - name: Configurar Pages
         uses: actions/configure-pages@v5
-        with:
-          # Habilita Pages en el repo si aún no lo está, sin pasar por Settings.
-          enablement: true
 
       - name: Subir artefacto
         uses: actions/upload-pages-artifact@v3

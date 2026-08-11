@@ -104,9 +104,10 @@ El sitio se publica solo en GitHub Pages con cada `push` a `main`, vía
 
 **URL:** https://arsontd.github.io/Ecofrano-proyect/
 
-El workflow habilita Pages por su cuenta (`enablement: true`). Si el primer
-despliegue falla ahí, hay que hacerlo a mano una vez: repo → *Settings* →
-*Pages* → *Build and deployment* → *Source*: elegir **GitHub Actions**.
+**Requisito, una sola vez:** repo → *Settings* → *Pages* → *Build and
+deployment* → *Source*: elegir **GitHub Actions**. Sin eso el paso *Configurar
+Pages* falla, porque el `GITHUB_TOKEN` del workflow no tiene permisos de admin
+para crear el sitio de Pages por su cuenta.
 
 Después, cada despliegue se ve en la pestaña *Actions*. También se puede lanzar
 a mano desde ahí con *Run workflow*.
