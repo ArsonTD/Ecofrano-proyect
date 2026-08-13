@@ -85,19 +85,6 @@ h2.big { font-size: clamp(26px, 4.4vw, 44px); max-width: 20ch; margin-bottom: 18
 .btn.dark { background: var(--ink); color: #fff; }
 .btn.dark:hover { background: var(--red); }
 
-/* ---------- aviso de prototipo ---------- */
-#demo {
-  background: var(--ink-2); color: #c9cdd1; font-family: var(--mono);
-  font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase;
-}
-#demo .wrap { display: flex; gap: 14px; align-items: center; justify-content: space-between; padding: 9px 22px; }
-#demo b { color: #fff; }
-#demo button {
-  background: none; border: 1px solid #3a3e42; color: #c9cdd1;
-  font-family: var(--mono); font-size: 10px; padding: 3px 8px; cursor: pointer; letter-spacing: 0.08em;
-}
-#demo button:hover { border-color: #fff; color: #fff; }
-
 /* ---------- nav ---------- */
 #nav {
   position: sticky; top: 0; z-index: 40;
@@ -108,10 +95,7 @@ h2.big { font-size: clamp(26px, 4.4vw, 44px); max-width: 20ch; margin-bottom: 18
 #nav .wrap { display: flex; align-items: center; gap: 24px; height: 64px; }
 
 .logo { display: flex; align-items: center; gap: 10px; color: #fff; }
-.logo .mark {
-  width: 26px; height: 26px; background: var(--red); display: grid; place-items: center;
-  font-weight: 800; font-size: 15px; color: #fff; flex: 0 0 26px;
-}
+.logo .mark { width: 28px; height: 28px; flex: 0 0 28px; }
 .logo b { font-size: 14.5px; font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase; line-height: 1.05; }
 .logo b span { display: block; font-size: 9px; letter-spacing: 0.22em; color: #9aa0a6; font-weight: 500; }
 
@@ -212,20 +196,6 @@ h2.big { font-size: clamp(26px, 4.4vw, 44px); max-width: 20ch; margin-bottom: 18
 .chip:hover { border-color: var(--ink); color: var(--ink); }
 .chip.on { background: var(--ink); border-color: var(--ink); color: #fff; }
 
-.admin-toggle {
-  margin-left: auto; display: flex; align-items: center; gap: 9px;
-  font-family: var(--mono); font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase;
-  color: var(--steel); cursor: pointer; user-select: none;
-}
-.switch { width: 34px; height: 18px; border: 1px solid var(--hair); background: var(--paper); position: relative; flex: 0 0 34px; }
-.switch::after {
-  content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px;
-  background: var(--steel); transition: transform 0.18s ease, background 0.18s ease;
-}
-.admin-toggle.on { color: var(--ink); }
-.admin-toggle.on .switch { border-color: var(--ink); }
-.admin-toggle.on .switch::after { transform: translateX(16px); background: var(--red); }
-
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .card { border: 1px solid var(--hair); background: var(--paper); display: flex; flex-direction: column; }
 .card[hidden] { display: none; }
@@ -247,42 +217,9 @@ h2.big { font-size: clamp(26px, 4.4vw, 44px); max-width: 20ch; margin-bottom: 18
   border: 1px solid var(--hair); padding: 4px 7px; color: var(--steel);
 }
 
-.card .acts { display: none; gap: 14px; padding: 11px 17px; border-top: 1px solid var(--hair); background: #fafaf8; }
-.card .acts button {
-  background: none; border: 0; padding: 0; font-family: var(--mono); font-size: 10px;
-  letter-spacing: 0.08em; text-transform: uppercase; color: var(--steel); cursor: pointer;
-}
-.card .acts button:hover { color: var(--red); }
-body.admin .card .acts { display: flex; }
-
-.card.oculto { opacity: 0.5; }
-.card.oculto .ph::after {
-  content: 'Oculto'; position: absolute; inset: 0; background: rgb(15 17 19 / 55%); color: #fff;
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-  display: grid; place-items: center;
-}
-
-#addBtn { display: none; }
-body.admin #addBtn { display: inline-flex; }
-
 .more { margin-top: 30px; display: flex; justify-content: center; }
 .more[hidden] { display: none; }
 .empty { border: 1px dashed var(--hair); padding: 44px 24px; text-align: center; color: var(--steel); font-size: 14px; }
-
-/* ---------- modal ---------- */
-#modal { position: fixed; inset: 0; z-index: 60; background: rgb(15 17 19 / 62%); display: block; padding: 22px; overflow: auto; }
-#modal[hidden] { display: none; }
-.sheet { background: var(--paper); max-width: 620px; margin: 32px auto; border: 1px solid var(--ink); }
-.sheet header { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--hair); }
-.sheet header h3 { font-size: 15px; }
-.sheet header button {
-  background: none; border: 0; font-family: var(--mono); font-size: 11px;
-  letter-spacing: 0.09em; text-transform: uppercase; color: var(--steel); cursor: pointer;
-}
-.sheet .body { padding: 22px; }
-.sheet footer { padding: 16px 22px; border-top: 1px solid var(--hair); display: flex; gap: 10px; justify-content: flex-end; background: #fafaf8; }
-.aviso { margin: 0; border: 1px solid var(--red); background: #fdf4f4; color: #a9161f; padding: 12px 14px; font-size: 13.5px; }
-.aviso[hidden] { display: none; }
 
 /* ---------- formularios ---------- */
 .f { margin-bottom: 16px; }
@@ -299,19 +236,6 @@ body.admin #addBtn { display: inline-flex; }
 .f.bad .err { display: block; }
 .hint { font-size: 12.5px; color: var(--steel); margin-top: 6px; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-.checks { display: flex; flex-wrap: wrap; gap: 8px; }
-.checks label {
-  display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 10px;
-  letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid var(--hair);
-  padding: 7px 10px; cursor: pointer; color: var(--steel); margin: 0;
-}
-.checks label:has(input:checked) { border-color: var(--ink); color: var(--ink); background: #f6f6f3; }
-.checks input { accent-color: var(--red); }
-
-.drop { border: 1px dashed var(--hair); padding: 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-.drop .prev { width: 82px; height: 62px; object-fit: cover; background: var(--concrete); border: 1px solid var(--hair); }
-.drop input[type='file'] { font-family: var(--mono); font-size: 11px; }
 
 /* ---------- contacto ---------- */
 #contacto { background: var(--ink); color: #fff; }
@@ -368,7 +292,6 @@ footer.site a:hover { color: #fff; }
   .svc { min-height: 0; }
   .team { grid-template-columns: repeat(2, 1fr); }
   .hero-in { min-height: 0; padding: 64px 0 0; }
-  .admin-toggle { margin-left: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

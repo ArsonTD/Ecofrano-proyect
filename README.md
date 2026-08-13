@@ -58,7 +58,8 @@ src/
   styles/       global.css — la hoja de estilos completa
   layouts/      Layout.astro — <head>, título, metadatos
   pages/        index.astro — arma la página con los componentes
-  assets/       Las 23 fotos
+  assets/       Las 23 fotos y logo.svg (la marca del nav)
+public/         favicon.svg — la misma marca, para la pestaña
 ```
 
 `@/` es un atajo para `src/`, así que `@/data/sitio` = `src/data/sitio.ts`.
@@ -72,13 +73,8 @@ Astro (varios tamaños vía `srcset`). Eso significa que la página se ve comple
 aunque el JavaScript falle, y que Google la puede indexar.
 
 [`src/scripts/proyectos.ts`](src/scripts/proyectos.ts) solo muestra y esconde
-esas tarjetas: filtro por tipo, «ver más obras» de 9 en 9, y el modo
-administrador.
-
-**Sobre el modo administrador:** los cambios se guardan en el navegador de quien
-los hace (`localStorage`), o sea que sirven para enseñar el flujo, no para
-publicar de verdad. Las obras que van al sitio se agregan en
-`src/data/proyectos.ts`, como arriba.
+esas tarjetas: filtro por tipo y «ver más obras» de 9 en 9. Las obras se agregan
+en `src/data/proyectos.ts`, como arriba.
 
 ---
 
@@ -88,11 +84,9 @@ publicar de verdad. Las obras que van al sitio se agregan en
    confirmación en pantalla. Está marcado con un `TODO` en
    [`src/components/Contacto.astro`](src/components/Contacto.astro); hay que
    apuntarlo al correo de la empresa.
-2. **Quitar el aviso de prototipo**: borra la línea `<Aviso />` de
-   [`src/pages/index.astro`](src/pages/index.astro).
-3. **Completar el RNC** en `src/data/sitio.ts` (hoy dice `000-00000-0`) y
+2. **Completar el RNC** en `src/data/sitio.ts` (hoy dice `000-00000-0`) y
    publicar el aviso de privacidad que enlaza el pie.
-4. **Confirmar con el cliente** los años, tipos y ubicaciones de las obras: en el
+3. **Confirmar con el cliente** los años, tipos y ubicaciones de las obras: en el
    dossier venían incompletos.
 
 ---

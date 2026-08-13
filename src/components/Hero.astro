@@ -42,7 +42,7 @@ const DATOS = [
       {
         DATOS.map(([valor, etiqueta]) => (
           <div>
-            <div class="n" data-dato={etiqueta}>{valor}</div>
+            <div class="n">{valor}</div>
             <div class="l">{etiqueta}</div>
           </div>
         ))
@@ -50,3 +50,68 @@ const DATOS = [
     </div>
   </div>
 </section>
+
+<script>
+  /**
+   * Los números del banner cuentan desde cero al cargar la página.
+   *
+   * El valor final ya viene escrito desde el build, así que sin JavaScript —o
+   * con la animación desactivada por accesibilidad— se ve igual, solo que quieto.
+   */
+
+  const DURACION = 1400;
+  const ESCALON = 110; // cada número arranca un poco después que el anterior
+
+  interface Cuenta {
+    nodo: HTMLElement;
+    /** Lo que va antes y después de la cifra: «+19», «360°». */
+    antes: string;
+    hasta: number;
+    despues: string;
+  }
+
+  const cuentas = [...document.querySelectorAll<HTMLElement>('.facts .n')]
+    .map((nodo) => {
+      const partes = /^(\D*)(\d+)(\D*)$/.exec(nodo.textContent?.trim() ?? '');
+      return partes
+        ? { nodo, antes: partes[1], hasta: Number(partes[2]), despues: partes[3] }
+        : null;
+    })
+    .filter((c): c is Cuenta => c !== null);
+
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const facts = document.querySelector('.facts');
+
+  if (cuentas.length && facts && !quieto) {
+    const escribir = (c: Cuenta, valor: number) => {
+      c.nodo.textContent = `${c.antes}${valor}${c.despues}`;
+    };
+
+    // A cero antes del primer pintado, para que no se vea el salto.
+    for (const c of cuentas) escribir(c, 0);
+
+    const contar = (c: Cuenta, retraso: number) => {
+      const arranque = performance.now() + retraso;
+      const paso = (ahora: number) => {
+        const t = Math.min(Math.max((ahora - arranque) / DURACION, 0), 1);
+        const suave = 1 - (1 - t) ** 3; // rápido al principio, frena al final
+        escribir(c, Math.round(c.hasta * suave));
+        if (t < 1) requestAnimationFrame(paso);
+      };
+      requestAnimationFrame(paso);
+    };
+
+    // Arranca sola al cargar, porque el banner se ve de entrada. El observador
+    // está por si se entra directo a otra sección (…/#contacto): entonces la
+    // cuenta espera a que el banner aparezca en pantalla.
+    const observador = new IntersectionObserver(
+      (entradas, obs) => {
+        if (!entradas.some((e) => e.isIntersecting)) return;
+        obs.disconnect();
+        cuentas.forEach((c, i) => contar(c, i * ESCALON));
+      },
+      { threshold: 0.2 },
+    );
+    observador.observe(facts);
+  }
+</script>

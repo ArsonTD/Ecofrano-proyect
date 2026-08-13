@@ -1,6 +1,5 @@
 ---
 import { Image } from 'astro:assets';
-import ModalProyecto from '@/components/ModalProyecto.astro';
 import { TIPOS, publicados } from '@/data/proyectos';
 
 const obras = publicados();
@@ -16,7 +15,6 @@ const cuenta = (tipo: string) => obras.filter((p) => p.tipo === tipo).length;
           Experiencia en desarrollos turísticos, residenciales y comerciales
         </h2>
       </div>
-      <button class="btn dark" type="button" id="addBtn">+ Agregar proyecto</button>
     </div>
 
     <p class="lede" style="margin-bottom:26px">
@@ -37,24 +35,12 @@ const cuenta = (tipo: string) => obras.filter((p) => p.tipo === tipo).length;
           ))
         }
       </div>
-
-      <div class="admin-toggle" id="adminToggle" role="switch" aria-checked="false" tabindex="0">
-        <span class="switch" aria-hidden="true"></span>
-        <span>Modo administrador</span>
-      </div>
     </div>
 
     <div class="cards" id="cards">
       {
         obras.map((p) => (
-          <article
-            class="card"
-            data-id={p.id}
-            data-tipo={p.tipo}
-            data-ubicacion={p.ubicacion}
-            data-anio={p.anio}
-            data-destacado={p.destacado ? 'si' : ''}
-          >
+          <article class="card" data-tipo={p.tipo} data-anio={p.anio}>
             <div class="ph">
               <Image
                 src={p.imagen}
@@ -76,19 +62,14 @@ const cuenta = (tipo: string) => obras.filter((p) => p.tipo === tipo).length;
                 ))}
               </div>
             </div>
-            <div class="acts">
-              <button type="button" data-accion="editar">Editar</button>
-              <button type="button" data-accion="visibilidad">Ocultar</button>
-              <button type="button" data-accion="eliminar">Eliminar</button>
-            </div>
           </article>
         ))
       }
     </div>
 
     <p class="empty" id="empty" hidden>
-      No hay obras publicadas en este tipo todavía. Cambia el filtro o agrega un
-      proyecto desde el panel.
+      No hay obras publicadas en este tipo todavía. Cambia el filtro para ver
+      las demás.
     </p>
 
     <div class="more" id="moreWrap" hidden>
@@ -96,8 +77,6 @@ const cuenta = (tipo: string) => obras.filter((p) => p.tipo === tipo).length;
     </div>
   </div>
 </section>
-
-<ModalProyecto />
 
 <script>
   import { iniciarProyectos } from '@/scripts/proyectos';
