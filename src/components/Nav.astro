@@ -1,13 +1,15 @@
 ---
 import Logo from '@/assets/logo.svg';
 import { EMPRESA } from '@/data/sitio';
+import { TIPOS, publicados } from '@/data/proyectos';
 
-const ENLACES = [
-  ['#servicios', 'Servicios'],
-  ['#nosotros', 'Nosotros'],
-  ['#proyectos', 'Proyectos'],
-  ['#contacto', 'Contacto'],
-];
+const obras = publicados();
+
+/** Las mismas categorías que filtran la galería, con su conteo. */
+const CATEGORIAS = TIPOS.map((tipo) => ({
+  tipo,
+  cuenta: obras.filter((p) => p.tipo === tipo).length,
+}));
 ---
 
 <header id="nav">
@@ -20,7 +22,24 @@ const ENLACES = [
     <button id="burger" type="button" aria-expanded="false" aria-controls="menu">Menú</button>
 
     <nav id="menu" aria-label="Navegación principal">
-      {ENLACES.map(([href, texto]) => <a href={href}>{texto}</a>)}
+      <a href="#servicios">Servicios</a>
+      <a href="#nosotros">Nosotros</a>
+
+      <div class="con-menu">
+        <a href="#proyectos">Proyectos</a>
+        <div class="submenu">
+          {
+            CATEGORIAS.map(({ tipo, cuenta }) => (
+              <a href="#proyectos" data-tipo={tipo}>
+                {tipo}
+                <span class="n">{cuenta}</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <a href="#contacto">Contacto</a>
     </nav>
 
     <a class="wa" href={EMPRESA.whatsapp} target="_blank" rel="noopener">WhatsApp</a>
@@ -39,9 +58,18 @@ const ENLACES = [
 
   // Al elegir una sección en móvil, el menú se cierra solo.
   menu.addEventListener('click', (e) => {
-    if ((e.target as HTMLElement).tagName === 'A') {
-      menu.classList.remove('open');
-      burger.setAttribute('aria-expanded', 'false');
+    const enlace = (e.target as HTMLElement).closest('a');
+    if (!enlace) return;
+
+    menu.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
+
+    // Las categorías del submenú aprietan el botón de filtro que ya tiene la
+    // galería, así que el filtro vive en un solo sitio. El salto a #proyectos
+    // lo hace el propio enlace.
+    const tipo = (enlace as HTMLElement).dataset.tipo;
+    if (tipo) {
+      document.querySelector<HTMLButtonElement>(`#chips .chip[data-tipo="${tipo}"]`)?.click();
     }
   });
 
@@ -49,8 +77,9 @@ const ENLACES = [
   document.addEventListener('scroll', alDesplazar, { passive: true });
   alDesplazar();
 
-  // Marca en el menú la sección que ocupa el centro de la pantalla.
-  const enlaces = [...menu.querySelectorAll('a')];
+  // Marca en el menú la sección que ocupa el centro de la pantalla. Solo los
+  // enlaces de primer nivel: los del submenú apuntan todos a #proyectos.
+  const enlaces = [...menu.querySelectorAll(':scope > a, :scope > .con-menu > a')];
   const observador = new IntersectionObserver(
     (entradas) => {
       for (const entrada of entradas) {

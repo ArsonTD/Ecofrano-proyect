@@ -99,12 +99,41 @@ h2.big { font-size: clamp(26px, 4.4vw, 44px); max-width: 20ch; margin-bottom: 18
 .logo b { font-size: 14.5px; font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase; line-height: 1.05; }
 .logo b span { display: block; font-size: 9px; letter-spacing: 0.22em; color: #9aa0a6; font-weight: 500; }
 
-#nav nav { margin-left: auto; display: flex; gap: 26px; }
+/* El menú ocupa los 64 px de alto de la barra: así el desplegable cuelga justo
+   del borde inferior y el mouse llega a él sin pasar por ningún hueco. */
+#nav nav { margin-left: auto; display: flex; gap: 26px; align-self: stretch; align-items: center; }
 #nav nav a {
   font-size: 12px; font-family: var(--mono); letter-spacing: 0.1em; text-transform: uppercase;
   color: #d6dade; padding: 4px 0; border-bottom: 1px solid transparent;
 }
 #nav nav a:hover, #nav nav a.on { color: #fff; border-bottom-color: var(--red); }
+
+/* ---------- submenú de proyectos ---------- */
+/* Se abre al pasar el mouse y también al tabular, sin JavaScript. */
+.con-menu { position: relative; align-self: stretch; display: flex; align-items: center; }
+.con-menu > a::after {
+  content: ''; display: inline-block; margin-left: 7px; vertical-align: 2px;
+  border: 3px solid transparent; border-bottom: 0; border-top-color: currentColor;
+  transition: transform 0.2s ease;
+}
+.con-menu:hover > a::after, .con-menu:focus-within > a::after { transform: rotate(180deg); }
+
+.submenu {
+  position: absolute; top: 100%; left: -16px; min-width: 218px; display: grid; padding: 6px 0;
+  background: rgb(15 17 19 / 97%); backdrop-filter: blur(10px);
+  border: 1px solid #2a2e32; border-top: 0;
+  opacity: 0; pointer-events: none; transform: translateY(-7px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.con-menu:hover .submenu, .con-menu:focus-within .submenu { opacity: 1; pointer-events: auto; transform: none; }
+
+/* Con #nav delante para ganarle en especificidad a la regla de arriba. */
+#nav .submenu a {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  padding: 10px 16px; border-bottom: 0; color: #c9cdd1; white-space: nowrap;
+}
+#nav .submenu a:hover, #nav .submenu a:focus-visible { background: var(--ink-2); color: #fff; }
+.submenu .n { color: var(--red); }
 
 .wa {
   background: #fff; color: var(--ink); font-size: 12px; font-weight: 700;
@@ -279,10 +308,20 @@ footer.site a:hover { color: #fff; }
   #nav nav {
     display: none; position: absolute; top: 64px; left: 0; right: 0;
     background: rgb(15 17 19 / 98%); flex-direction: column; gap: 0;
-    padding: 8px 22px 18px; border-bottom: 1px solid #2a2e32;
+    padding: 8px 22px 18px; border-bottom: 1px solid #2a2e32; align-items: stretch;
   }
   #nav nav.open { display: flex; }
   #nav nav a { padding: 12px 0; border-bottom: 1px solid #22262a; }
+
+  /* En táctil no hay hover: las categorías se ven siempre, indentadas bajo Proyectos. */
+  .con-menu { display: block; }
+  .con-menu > a::after { display: none; }
+  .submenu {
+    position: static; min-width: 0; padding: 0 0 0 18px; opacity: 1; pointer-events: auto;
+    transform: none; background: none; backdrop-filter: none; border: 0;
+  }
+  #nav .submenu a { padding: 11px 0; border-bottom: 1px solid #22262a; }
+  #nav .submenu a:hover, #nav .submenu a:focus-visible { background: none; }
   #nav .wa { display: none; }
   #burger { display: block; }
   .facts { grid-template-columns: repeat(2, 1fr); margin-top: 52px; }
