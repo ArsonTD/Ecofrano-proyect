@@ -85,6 +85,18 @@ h2.big { font-size: clamp(26px, 4.4vw, 44px); max-width: 20ch; margin-bottom: 18
 .btn.dark { background: var(--ink); color: #fff; }
 .btn.dark:hover { background: var(--red); }
 
+/* Variante chica, para acciones secundarias junto a un boton normal. */
+.btn.chico { padding: 10px 14px; font-size: 11px; letter-spacing: 0.06em; gap: 7px; }
+.btn.chico .ico { width: 13px; height: 13px; flex: 0 0 13px; }
+
+/* Icono dentro de un boton: hereda el color del texto y baja con el hover. */
+.btn .ico {
+  width: 15px; height: 15px; flex: 0 0 15px; fill: none;
+  stroke: currentColor; stroke-width: 1.6; stroke-linecap: square;
+  transition: transform 0.2s ease;
+}
+.btn:hover .ico { transform: translateY(2px); }
+
 /* ---------- nav ---------- */
 #nav {
   position: sticky; top: 0; z-index: 40;

@@ -5,6 +5,8 @@ import { ANIOS, EMPRESA } from '@/data/sitio';
 import { SERVICIOS } from '@/data/servicios';
 import { publicados } from '@/data/proyectos';
 
+const DOSIER = `${import.meta.env.BASE_URL.replace(/\/$/, '')}/dosier-encofrado-flernil.pdf`;
+
 const DATOS = [
   [`+${ANIOS}`, 'Años en obra'],
   [String(publicados().length), 'Obras entregadas'],
@@ -36,6 +38,18 @@ const DATOS = [
     <div class="hero-cta">
       <a class="btn primary" href="#contacto">Solicitar cotización</a>
       <a class="btn ghost" href={EMPRESA.telefonoHref}>Llamar {EMPRESA.telefono}</a>
+      <a
+        class="btn ghost chico"
+        href={DOSIER}
+        download
+        type="application/pdf"
+        title="Dosier de Encofrado Flernil en PDF (17 MB)"
+      >
+        <svg class="ico" viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M8 1v8.6M4.4 6.4 8 10l3.6-3.6M1.8 12.6V14h12.4v-1.4" />
+        </svg>
+        Descargar dosier
+      </a>
     </div>
 
     <div class="facts">
